@@ -1,0 +1,9 @@
+<h1>mtl.jobs</h1>
+<h2>marketing and communication job in montreal</h2>
+
+<ul>
+  <% @jobs.each do |job| %>
+  <li><strong><%= link_to job.title, job.url %></strong> - <small><%= job.business %></small></li>
+  <% end %>
+</ul>
+

@@ -1,7 +1,14 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
-#
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
+# Seed the Feeds
+
+Feed.destroy_all
+feeds = [{name: "Infopresse Jobs",
+					url: "https://www3.infopresse.com/jobs/rss/"},
+
+				 {name: "Espresso Jobs",
+				 	url: "http://feeds.feedburner.com/espressojobs"},
+
+				 {name: "Isarta",
+				 	url: "http://emplois.isarta.com/jobs/rss/emplois.shtml"}]
+
+Feed.create feeds
+puts "#{Feed.count} feed(s) created."
