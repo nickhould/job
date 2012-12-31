@@ -11,7 +11,8 @@ class Job < ActiveRecord::Base
   end
 
   validates_presence_of :business, :published_at, :title, :url, :guid, :feed_id
-
+  validates :guid, uniqueness: true
+  
   def self.update_from_feeds
   	Feed.all.each do |feed|
     	rss_feed = Feedzirra::Feed.fetch_and_parse(feed.url)
@@ -30,7 +31,7 @@ class Job < ActiveRecord::Base
     end
   end
 
-  def self.feed_adapter(entry, feed)  	
+  def self.feed_adapter(entry, feed)	
   	if feed.name == "Espresso Jobs"
       new_job_from_espresso(entry, feed)
     elsif feed.name == "Infopresse Jobs"
@@ -41,12 +42,14 @@ class Job < ActiveRecord::Base
   end
 
   def self.new_job_from_espresso(entry, feed)
-    job = { title:        entry.title,
-            business:     entry.author,
-            url:          entry.id,
-            published_at: entry.published,
-            guid:         entry.id,
-            feed_id:      feed.id }
+    if entry.author != "Espresso-Jobs"
+      job = { title:        entry.title,
+              business:     entry.author,
+              url:          entry.id,
+              published_at: entry.published,
+              guid:         entry.id,
+              feed_id:      feed.id }
+    end
   end
   def self.new_job_from_infopresse(entry, feed)
 		summary = Nokogiri::HTML(entry.summary)

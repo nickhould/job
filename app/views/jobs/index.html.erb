@@ -5,8 +5,8 @@
   <% @jobs.each do |job| %>
   <li>
     <%= job.published_at.strftime('%m/%d/%Y') if job.published_at %>
-    <strong><%= link_to job.title, job.url %></strong> 
-    - <small><%= job.business %></small>
+    <strong><%= link_to UnicodeUtils.titlecase(job.title), job.url %></strong> 
+    - <small><%= UnicodeUtils.upcase(job.business) %></small>
   </li>
   <% end %>
 </ul>

@@ -24,6 +24,16 @@ describe Job do
 
   it { should be_valid }
 
+  describe "when guid is not unique" do
+    before do
+      job_with_same_guid = @job.dup
+      job_with_same_guid.guid = @job.guid.upcase
+      job_with_same_guid.save
+    end
+
+    it { should_not be_valid }
+  end
+
   describe "when business is not present" do
     before { @job.business = " " }
     it { should_not be_valid }
