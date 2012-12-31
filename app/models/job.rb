@@ -3,7 +3,13 @@
 class Job < ActiveRecord::Base
   attr_accessible :business, :published_at, :title, :url, :guid, :feed_id
   belongs_to :feed
-  before_validation :downcase_job
+  before_save do |job| 
+    job.business = UnicodeUtils.downcase(business)
+    job.title = UnicodeUtils.downcase(title)
+    job.url = UnicodeUtils.downcase(url)
+    job.guid = UnicodeUtils.downcase(guid)
+  end
+
   validates_presence_of :business, :published_at, :title, :url, :guid, :feed_id
 
   def self.update_from_feeds
@@ -15,12 +21,6 @@ class Job < ActiveRecord::Base
   
   
   private
-
-  def downcase_job
-    title = title.downcase if title
-    business = business.downcase  if business
-    url = url.downcase if url
-  end
 
   def self.create_jobs_from_feed(entries, feed)
     entries.each do |entry|

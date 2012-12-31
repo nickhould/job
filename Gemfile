@@ -8,6 +8,10 @@ gem 'feedzirra'
 gem 'sqlite3'
 gem 'nokogiri'
 gem 'rspec-rails'
+gem 'unicode_utils'
+gem 'will_paginate', '3.0.3'
+gem 'bootstrap-will_paginate', '0.0.6'
+gem 'bootstrap-sass', '2.1'
 
 # Gems used only for assets and not required
 # in production environments by default.
