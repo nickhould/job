@@ -3,7 +3,11 @@
 
 <ul>
   <% @jobs.each do |job| %>
-  <li><strong><%= link_to job.title, job.url %></strong> - <small><%= job.business %></small></li>
+  <li>
+    <%= job.published_at.strftime('%m/%d/%Y') if job.published_at %>
+    <strong><%= link_to job.title, job.url %></strong> 
+    - <small><%= job.business %></small>
+  </li>
   <% end %>
 </ul>
 

@@ -2,7 +2,7 @@ class JobsController < ApplicationController
   # GET /jobs
   # GET /jobs.json
   def index
-    @jobs = Job.all
+    @jobs = Job.find(:all, order: "published_at DESC")
 
     respond_to do |format|
       format.html # index.html.erb

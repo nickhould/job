@@ -3,42 +3,51 @@
 class Job < ActiveRecord::Base
   attr_accessible :business, :published_at, :title, :url, :guid, :feed_id
   belongs_to :feed
+  before_validation :downcase_job
+  validates_presence_of :business, :published_at, :title, :url, :guid, :feed_id
 
   def self.update_from_feeds
   	Feed.all.each do |feed|
     	rss_feed = Feedzirra::Feed.fetch_and_parse(feed.url)
-    	add_entries(rss_feed.entries, feed)
+    	create_jobs_from_feed(rss_feed.entries, feed)
     end
   end
   
   
   private
 
-  def self.feed_adapter(entry, feed)  	
-  	if feed.name == "Espresso Jobs"
-			job = { title:        entry.title,
-							business:     entry.author,
-          	 	url:          entry.id,
-          	  published_at: entry.published,
-              guid:    		  entry.id,
-              feed_id:      feed.id }
-      return job
-
-    elsif feed.name == "Infopresse Jobs"
-    	job = new_job_from_infopresse(entry, feed)  
-    elsif feed.name == "Isarta"
-      job = new_job_from_isarta(entry, feed)  
-  	end	
+  def downcase_job
+    title = title.downcase if title
+    business = business.downcase  if business
+    url = url.downcase if url
   end
 
-  def self.add_entries(entries, feed)
+  def self.create_jobs_from_feed(entries, feed)
     entries.each do |entry|
       unless exists? :guid => entry.id
-        create!(feed_adapter(entry, feed))
+        create(feed_adapter(entry, feed))
       end
     end
   end
 
+  def self.feed_adapter(entry, feed)  	
+  	if feed.name == "Espresso Jobs"
+      new_job_from_espresso(entry, feed)
+    elsif feed.name == "Infopresse Jobs"
+    	new_job_from_infopresse(entry, feed)  
+    elsif feed.name == "Isarta"
+      new_job_from_isarta(entry, feed)  
+  	end	
+  end
+
+  def self.new_job_from_espresso(entry, feed)
+    job = { title:        entry.title,
+            business:     entry.author,
+            url:          entry.id,
+            published_at: entry.published,
+            guid:         entry.id,
+            feed_id:      feed.id }
+  end
   def self.new_job_from_infopresse(entry, feed)
 		summary = Nokogiri::HTML(entry.summary)
   	business_name = summary.css('a').first.text
