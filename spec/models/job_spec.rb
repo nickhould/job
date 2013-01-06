@@ -135,14 +135,21 @@ describe Job do
   end
 
   describe "supported keys" do
-    before do 
-      @supported_keys = Job.supported_keys
+    context "in Job model" do
+      before do
+        @supported_keys = Job.supported_keys
+      end
+      
+      subject { @supported_keys }
+
+      it { should be_kind_of(Array) }
+      it { should have(3).item }
+      it { should include(:business) }
+      it { should include(:published_at) }
+      it { should_not include(:guid) }
+      it { should_not include(:feed_id) }
+      it { should_not include(:url) }
     end
-    
-    subject { @supported_keys }
-
-    it { should be_kind_of(Array) }
-
   end
 end
 

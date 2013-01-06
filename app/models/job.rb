@@ -11,6 +11,7 @@ class Job < ActiveRecord::Base
 
   validates_presence_of :business, :published_at, :title
 
+  # creation
   def self.update_from_feeds
   	Feed.all.each do |feed|
     	rss_feed = Feedzirra::Feed.fetch_and_parse(feed.url)
@@ -18,16 +19,15 @@ class Job < ActiveRecord::Base
     end
   end
   
-  private
-
   def self.create_jobs_from_feed(entries, feed)
     entries.each do |entry|
-      job = feed_adapter(entry, feed)
-      job = find_by_title_and_business(job[:title], job[:business]) || create(builder(job))
+      job_entry = feed_adapter(entry, feed)
+      job = find_by_title_and_business(job_entry[:title], job_entry[:business]) || create(builder(job))
       job.job_feeds.create_from_feed(job) unless job
     end
   end
 
+  # builders
   def self.builder(job)
     formatted_job = {}
     supported_keys.each do |supported_key|
@@ -41,6 +41,7 @@ class Job < ActiveRecord::Base
     [:title, :business, :published_at] if self.to_s == "Job" 
   end
 
+  # adapters
   def self.feed_adapter(entry, feed)	
   	new_job_from_espresso(entry, feed) if feed.name == "Espresso Jobs"
     new_job_from_infopresse(entry, feed) if feed.name == "Infopresse Jobs"
