@@ -23,11 +23,19 @@ class Job < ActiveRecord::Base
   def self.create_jobs_from_feed(entries, feed)
     entries.each do |entry|
       job = feed_adapter(entry, feed)
-      if job.kind_of? Hash && job.length > 0 # to be completed
-        job = find_by_title_and_business(job[:title], job[:business]) || create(job)
-        job.job_feeds.create_from_feed(job) unless job
-      end
+      job = find_by_title_and_business(job[:title], job[:business]) || create(job)
+      job.job_feeds.create_from_feed(job) unless job
     end
+  end
+
+  # to be completed
+  def self.job_builder(job)
+    # job.select do |key, value|
+    #   [:title, :business, :published_at].each do |field|
+    #     field == key
+    #   end
+    # end
+    return Hash.new
   end
 
   def self.feed_adapter(entry, feed)	

@@ -7,7 +7,7 @@ class JobFeed < ActiveRecord::Base
     job_feed.url  = UnicodeUtils.downcase(url)
   end
 
-  validates :guid, uniqueness: true
+  validates :guid, uniqueness: { case_sensitive: false }
 
   belongs_to :job
   belongs_to :feed

@@ -34,7 +34,6 @@ describe Job do
     it { should_not be_valid }
   end
 
-
   describe "business with mixed case" do
     let(:mixed_case_business) { "ExAmPlE bUSiNesS" }
 
@@ -110,6 +109,23 @@ describe Job do
       Job.should_receive(:new_job_from_isarta).with(entry, feed)
       Job.feed_adapter(entry, feed)    
     end
+  end
+
+  describe "job builder" do
+    before do
+      job_entry = double("job_entry", title: "Job title",
+                                      business: "Job business",
+                                      url: "Job url",
+                                      published_at: "Job published_at",
+                                      guid: "Job guid",
+                                      feed_id: 1)
+      @formatted_job_entry = Job.job_builder(job_entry)
+    end
+    
+    subject { @formatted_job_entry }
+
+    it { should be_kind_of(Hash) }
+    
   end
 end
 

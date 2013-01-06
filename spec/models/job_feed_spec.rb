@@ -23,7 +23,7 @@ describe JobFeed do
   describe "when guid is not unique" do
     before do
       job_feed_with_same_guid = @job_feed.dup
-      # job_feed_with_same_guid.guid = @job_feed.guid
+      job_feed_with_same_guid.guid = @job_feed.guid.downcase
       job_feed_with_same_guid.save
     end
 
