@@ -1,18 +1,16 @@
 # encoding: utf-8
 
 class Job < ActiveRecord::Base
-  attr_accessible :business, :published_at, :title, :url, :guid, :feed_id
-  belongs_to :feed
+  attr_accessible :business, :published_at, :title
+  has_many :job_feeds
+
   before_save do |job| 
     job.business = UnicodeUtils.downcase(business)
     job.title = UnicodeUtils.downcase(title)
-    job.url = UnicodeUtils.downcase(url)
-    job.guid = UnicodeUtils.downcase(guid)
   end
 
-  validates_presence_of :business, :published_at, :title, :url, :guid, :feed_id
-  validates :guid, uniqueness: true
-  
+  validates_presence_of :business, :published_at, :title
+
   def self.update_from_feeds
   	Feed.all.each do |feed|
     	rss_feed = Feedzirra::Feed.fetch_and_parse(feed.url)
@@ -20,13 +18,14 @@ class Job < ActiveRecord::Base
     end
   end
   
-  
   private
 
   def self.create_jobs_from_feed(entries, feed)
     entries.each do |entry|
-      unless exists? :guid => entry.id
-        create(feed_adapter(entry, feed))
+      job = feed_adapter(entry, feed)
+      if job.kind_of? Hash && job.length > 0 # to be completed
+        job = find_by_title_and_business(job[:title], job[:business]) || create(job)
+        job.job_feeds.create_from_feed(job) unless job
       end
     end
   end
