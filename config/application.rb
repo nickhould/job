@@ -58,5 +58,8 @@ module JobProject
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    # Load app/model sub directories in the app/model directory
+    config.autoload_paths += Dir[Rails.root.join('app', 'models', '{**}')]
   end
 end

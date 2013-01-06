@@ -150,6 +150,10 @@ describe Job do
       it { should_not include(:feed_id) }
       it { should_not include(:url) }
     end
+
+    context "in JobFeed model" do
+
+    end
   end
 end
 
