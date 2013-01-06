@@ -111,21 +111,38 @@ describe Job do
     end
   end
 
-  describe "job builder" do
+  describe "builder" do
     before do
-      job_entry = double("job_entry", title: "Job title",
-                                      business: "Job business",
-                                      url: "Job url",
-                                      published_at: "Job published_at",
-                                      guid: "Job guid",
-                                      feed_id: 1)
-      @formatted_job_entry = Job.job_builder(job_entry)
+      job_entry = Hash.new 
+      job_entry = { title: "Job title",
+                    business: "Job business",
+                    url: "Job url",
+                    published_at: "Job published_at",
+                    guid: "Job guid",
+                    feed_id: 1 }
+      @formatted_job_entry = Job.builder(job_entry)
     end
-    
+
     subject { @formatted_job_entry }
 
     it { should be_kind_of(Hash) }
+    it { should have_key(:title) }
+    it { should have_key(:business) }
+    it { should have_key(:published_at) }
+    it { should_not have_key(:guid) }
+    it { should_not have_key(:feed_id) }
+    it { should_not have_key(:url) }
+  end
+
+  describe "supported keys" do
+    before do 
+      @supported_keys = Job.supported_keys
+    end
     
+    subject { @supported_keys }
+
+    it { should be_kind_of(Array) }
+
   end
 end
 

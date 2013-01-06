@@ -23,29 +23,28 @@ class Job < ActiveRecord::Base
   def self.create_jobs_from_feed(entries, feed)
     entries.each do |entry|
       job = feed_adapter(entry, feed)
-      job = find_by_title_and_business(job[:title], job[:business]) || create(job)
+      job = find_by_title_and_business(job[:title], job[:business]) || create(builder(job))
       job.job_feeds.create_from_feed(job) unless job
     end
   end
 
-  # to be completed
-  def self.job_builder(job)
-    # job.select do |key, value|
-    #   [:title, :business, :published_at].each do |field|
-    #     field == key
-    #   end
-    # end
-    return Hash.new
+  def self.builder(job)
+    formatted_job = {}
+    supported_keys.each do |supported_key|
+      job.each {|key, value| formatted_job[key] = value if supported_key == key }
+    end
+    formatted_job
+  end
+
+  def self.supported_keys
+    [:title, :business, :published_at, :guid, :feed_id, :url] if self.to_s == "JobFeed"
+    [:title, :business, :published_at] if self.to_s == "Job" 
   end
 
   def self.feed_adapter(entry, feed)	
-  	if feed.name == "Espresso Jobs"
-      new_job_from_espresso(entry, feed)
-    elsif feed.name == "Infopresse Jobs"
-    	new_job_from_infopresse(entry, feed)  
-    elsif feed.name == "Isarta"
-      new_job_from_isarta(entry, feed)  
-  	end	
+  	new_job_from_espresso(entry, feed) if feed.name == "Espresso Jobs"
+    new_job_from_infopresse(entry, feed) if feed.name == "Infopresse Jobs"
+    new_job_from_isarta(entry, feed) if feed.name == "Isarta"
   end
 
   def self.new_job_from_espresso(entry, feed)
