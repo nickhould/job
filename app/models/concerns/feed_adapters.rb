@@ -1,4 +1,6 @@
 module FeedAdapters
+  # Contains adapters for the different job feeds. 
+
   def feed_adapter(entry, feed)  
   new_job_from_espresso(entry, feed) if feed.name == "Espresso Jobs"
   new_job_from_infopresse(entry, feed) if feed.name == "Infopresse Jobs"

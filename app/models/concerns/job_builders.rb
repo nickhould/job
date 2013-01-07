@@ -1,4 +1,6 @@
 module JobBuilders
+  # Enables models (Job & JobFeed) to format the Hash correctly before creation
+
   def builder(job)
     formatted_job = {}
     supported_keys.each do |supported_key|
@@ -8,7 +10,7 @@ module JobBuilders
   end
 
   def supported_keys
-    [:title, :business, :published_at, :guid, :feed_id, :url] if self.to_s == "JobFeed"
-    [:title, :business, :published_at] if self.to_s == "Job" 
+    [:title, :business, :published_at, :guid, :feed_id, :url] if self.to_s == "JobFeed" #class
+    [:title, :business, :published_at] if self.to_s == "Job" #class
   end
 end

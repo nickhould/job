@@ -20,8 +20,3 @@ class JobFeed < ActiveRecord::Base
     end    
   end
 end
-
-
-# find or create the job
-# create an JobFeed unless it exists
-  
