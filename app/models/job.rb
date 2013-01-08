@@ -2,7 +2,6 @@
 
 class Job < ActiveRecord::Base
   extend FeedAdapters
-  extend JobBuilders 
 
   attr_accessible :business, :published_at, :title
   has_many :job_feeds
@@ -24,9 +23,14 @@ class Job < ActiveRecord::Base
   def self.create_jobs_from_feed(entries, feed)
     entries.each do |entry|
       job_entry = feed_adapter(entry, feed)
-      job = find_by_title_and_business(job_entry[:title], job_entry[:business]) || create(builder(job))
-      job.job_feeds.create_from_feed(job) unless job
+      job = find_job_or_create(job_entry)
+      job.job_feeds.create_from_feed(job_entry) unless job
     end
+  end
+
+  def self.find_job_or_create(job_entry)
+    find_by_title_and_business(job_entry[:title], job_entry[:business]) || 
+    create(JobBuilder.build_job(job))
   end
 end
 

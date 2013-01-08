@@ -1,6 +1,4 @@
 class JobFeed < ActiveRecord::Base
-  extend JobBuilders
-
   attr_accessible :feed_id, :guid, :job_id, :published_at, :url
   validates_presence_of :feed_id, :guid, :job_id, :published_at, :url
   
@@ -16,7 +14,7 @@ class JobFeed < ActiveRecord::Base
   
   def self.create_from_feed(job)
     unless exists? :guid => job.guid.to_s
-      create(builder(job))
+      create(JobBuilder.build_job_feed(job))
     end    
   end
 end
