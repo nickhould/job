@@ -29,8 +29,7 @@ class Job < ActiveRecord::Base
   end
 
   def self.find_job_or_create(job_entry)
-    find_by_title_and_business(job_entry[:title], job_entry[:business]) || 
-    create(JobBuilder.build_job(job))
+    find_by_title_and_business(job_entry[:title], job_entry[:business]) || create(JobBuilder.build_job(job))
   end
 end
 

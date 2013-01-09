@@ -1,9 +1,10 @@
 class JobBuilder
   # Enables models (Job & JobFeed) to format the Hash correctly before creation
   @job_supported_keys = [:title, :business, :published_at]
-  @job_feed_supported_keys = [:title, :business, :published_at, :guid, :feed_id, :url]
+  @job_feed_supported_keys = [:published_at, :guid, :feed_id, :url]
 
   def self.build(job, supported_keys=[])
+    raise "No supported keys in the Array" if supported_keys.empty?
     formatted_job = {}
     supported_keys.each do |supported_key|
       job.each {|key, value| formatted_job[key] = value if supported_key == key }
